@@ -1,7 +1,7 @@
 # BÁO CÁO KẾT QUẢ LAB MLOPS
 
-**Họ và tên:** [Tên của bạn]
-**MSSV:** [Mã số sinh viên]
+**Họ và tên:** Nguyễn Văn Bách
+**Mã học viên:** 2A202600234
 **Repository:** [https://github.com/bachnguyen188/Day21-Track2-CI-CD-for-AI-Systems]
 
 ---
@@ -9,8 +9,8 @@
 ## 1. Phân tích thực nghiệm (Bước 1)
 Dựa trên kết quả từ MLflow UI, tôi đã tiến hành 3 thí nghiệm chính với thuật toán RandomForest:
 - **Lần 1:** `n_estimators=100`, `max_depth=10` -> Accuracy: 0.6440
-- **Lần 2:** `n_estimators=200`, `max_depth=10` -> Accuracy: 0.6760
-- **Lần 3:** `n_estimators=500`, `max_depth=100` -> Accuracy: 0.6820
+- **Lần 2:** `n_estimators=200`, `max_depth=10` -> Accuracy: 0.6480
+- **Lần 3:** `n_estimators=500`, `max_depth=100` -> Accuracy: 0.6760
 
 **Kết luận:** Việc tăng độ sâu và số lượng cây giúp cải thiện mô hình nhưng vẫn chưa đạt ngưỡng 0.70 do giới hạn của lượng dữ liệu Phase 1.
 
