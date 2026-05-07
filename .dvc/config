@@ -2,4 +2,3 @@
     remote = myremote
 ['remote "myremote"']
     url = gs://mlops-lab-bach-unique-id/dvc
-    credentialpath = ../sa-key.json
