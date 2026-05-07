@@ -22,7 +22,9 @@ Dựa trên kết quả từ MLflow UI, tôi đã tiến hành 3 thí nghiệm c
 - **Lỗi môi trường Python:** Gặp lỗi `MissingConfigException` của MLflow trên Windows. Cách giải quyết: Thiết lập `MLFLOW_TRACKING_URI` là database SQLite tạm thời khi chạy Test để đảm bảo tính độc lập.
 - **Lỗi Deploy trên VM:** API ban đầu không khởi động được do thiếu thư viện `google-cloud-storage` trên máy ảo và lỗi đồng bộ thời gian tải mô hình. Cách giải quyết: Cài đặt đầy đủ thư viện trên VM và tăng thời gian `sleep` trong Pipeline lên 30s để server kịp tải model từ GCS.
 
-## 4. Các tính năng Bonus đã thực hiện
+## 4. Các tính năng Bonus đã thực hiện (5/5)
+- **Bonus 1:** Hỗ trợ Tracking MLflow từ xa với DagsHub thông qua biến môi trường.
 - **Bonus 2:** Mở rộng code để hỗ trợ nhiều thuật toán (RandomForest & GradientBoosting).
-- **Bonus 3:** Tự động tạo báo cáo `report.txt` sau mỗi lần huấn luyện.
-- **Bonus 5:** Thêm cảnh báo lệch lạc dữ liệu (Data Drift) dựa trên phân phối nhãn.
+- **Bonus 3:** Tự động tạo báo cáo `report.txt` (Precision, Recall, Confusion Matrix) dưới dạng GitHub Artifact.
+- **Bonus 4:** Xây dựng Safety Gate: Tự động chặn Deploy (Rollback) nếu mô hình mới có Accuracy thấp hơn mô hình cũ trên GCS.
+- **Bonus 5:** Thêm cảnh báo lệch lạc dữ liệu (Data Drift/Imbalance) dựa trên phân phối nhãn.
