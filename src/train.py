@@ -38,13 +38,38 @@ def train(
     X_eval = df_eval.drop(columns=["target"])
     y_eval = df_eval["target"]
 
-    with mlflow.start_run():
+    # Bonus 5: Check Label Distribution
+    dist = y_train.value_counts(normalize=True)
+    print("\n[Bonus 5] Label Distribution:")
+    for label, ratio in dist.items():
+        print(f"  Class {label}: {ratio:.2%}")
+        if ratio < 0.10:
+            print(f"  WARNING: Class {label} is below 10% (Data Drift/Imbalance)!")
 
-        # TODO 3: Ghi nhan cac sieu tham so
+    with mlflow.start_run():
+        # Bonus 2: Model Selection
+        model_type = params.get("model_type", "random_forest")
+        mlflow.log_param("model_type", model_type)
         mlflow.log_params(params)
 
-        # TODO 4: Khoi tao va huan luyen RandomForestClassifier
-        model = RandomForestClassifier(**params, random_state=42)
+        if model_type == "random_forest":
+            model = RandomForestClassifier(
+                n_estimators=params.get("n_estimators", 100),
+                max_depth=params.get("max_depth"),
+                min_samples_split=params.get("min_samples_split", 2),
+                random_state=42
+            )
+        elif model_type == "gradient_boosting":
+            from sklearn.ensemble import GradientBoostingClassifier
+            model = GradientBoostingClassifier(
+                n_estimators=params.get("n_estimators", 100),
+                learning_rate=params.get("learning_rate", 0.1),
+                max_depth=params.get("max_depth", 3),
+                random_state=42
+            )
+        else:
+            raise ValueError(f"Unknown model type: {model_type}")
+
         model.fit(X_train, y_train)
 
         # TODO 5: Du doan tren tap danh gia va tinh chi so
@@ -59,6 +84,21 @@ def train(
 
         # TODO 7: In ket qua ra man hinh
         print(f"Accuracy: {acc:.4f} | F1: {f1:.4f}")
+
+        # Bonus 3: Detailed Report
+        from sklearn.metrics import classification_report, confusion_matrix
+        report_text = classification_report(y_eval, preds)
+        matrix = confusion_matrix(y_eval, preds)
+        
+        with open("outputs/report.txt", "w") as f:
+            f.write("=== MLOPS PERFORMANCE REPORT ===\n")
+            f.write(f"Model Type: {model_type}\n")
+            f.write(f"Accuracy: {acc:.4f}\n")
+            f.write(f"F1 Score: {f1:.4f}\n\n")
+            f.write("Classification Report:\n")
+            f.write(report_text)
+            f.write("\nConfusion Matrix:\n")
+            f.write(str(matrix))
 
         # TODO 8: Luu metrics ra file outputs/metrics.json
         os.makedirs("outputs", exist_ok=True)

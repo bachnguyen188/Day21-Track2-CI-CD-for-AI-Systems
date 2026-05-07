@@ -66,6 +66,12 @@ jobs:
           accuracy=$(python -c "import json; print(json.load(open('outputs/metrics.json'))['accuracy'])")
           echo "accuracy=$accuracy" >> $GITHUB_OUTPUT
 
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: outputs/report.txt
+
       - name: Upload model to Cloud Storage
         run: |
           python - <<'EOF'
