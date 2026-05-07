@@ -8,6 +8,12 @@ import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
 
+# Bonus 1: DagsHub Tracking Setup
+if os.getenv("DAGSHUB_TOKEN"):
+    import dagshub
+    dagshub.init(repo_owner='bachnguyen188', repo_name='Day21-Track2-CI-CD-for-AI-Systems', token=os.getenv("DAGSHUB_TOKEN"))
+    mlflow.set_tracking_uri("https://dagshub.com/bachnguyen188/Day21-Track2-CI-CD-for-AI-Systems.mlflow")
+
 EVAL_THRESHOLD = 0.70
 
 

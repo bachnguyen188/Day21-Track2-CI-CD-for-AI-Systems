@@ -72,17 +72,39 @@ jobs:
           name: performance-report
           path: outputs/report.txt
 
-      - name: Upload model to Cloud Storage
+      - name: Upload model and metrics to Cloud Storage
         run: |
           python - <<'EOF'
-          from google.cloud import storage
           import os
+          import json
+          from google.cloud import storage
 
           client = storage.Client()
-          bucket = client.bucket(os.environ["CLOUD_BUCKET"])
-          blob = bucket.blob("models/latest/model.pkl")
-          blob.upload_from_filename("models/model.pkl")
-          print(f"Model uploaded to gs://{os.environ['CLOUD_BUCKET']}/models/latest/model.pkl")
+          bucket = client.bucket(os.environ['CLOUD_BUCKET'])
+          
+          # Bonus 4: So sanh voi model cu
+          old_metrics_blob = bucket.blob("models/latest/metrics.json")
+          is_better = True
+          new_metrics = json.load(open("outputs/metrics.json"))
+          new_accuracy = new_metrics["accuracy"]
+
+          if old_metrics_blob.exists():
+              old_metrics = json.loads(old_metrics_blob.download_as_text())
+              if new_accuracy < old_metrics["accuracy"]:
+                  print(f"WARNING: New accuracy ({new_accuracy}) is lower than old ({old_metrics['accuracy']}). Rollback triggered.")
+                  is_better = False
+          
+          # Chi upload va cho phep deploy neu model tot hon hoac bang
+          if is_better:
+              # Upload model
+              bucket.blob("models/latest/model.pkl").upload_from_filename("models/model.pkl")
+              # Upload metrics
+              bucket.blob("models/latest/metrics.json").upload_from_filename("outputs/metrics.json")
+              print("Model updated as it's better or equal to the previous one.")
+          else:
+              # Neu kem hon, chung ta se thoat voi loi de chan cac buoc sau
+              print("Deployment aborted due to lower performance.")
+              exit(1)
           EOF
         env:
           CLOUD_BUCKET: ${{ secrets.CLOUD_BUCKET }}
