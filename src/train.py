@@ -96,6 +96,7 @@ def train(
         report_text = classification_report(y_eval, preds)
         matrix = confusion_matrix(y_eval, preds)
         
+        os.makedirs("outputs", exist_ok=True)
         with open("outputs/report.txt", "w") as f:
             f.write("=== MLOPS PERFORMANCE REPORT ===\n")
             f.write(f"Model Type: {model_type}\n")
@@ -107,7 +108,6 @@ def train(
             f.write(str(matrix))
 
         # TODO 8: Luu metrics ra file outputs/metrics.json
-        os.makedirs("outputs", exist_ok=True)
         with open("outputs/metrics.json", "w") as f:
             json.dump({"accuracy": acc, "f1_score": f1}, f)
 
