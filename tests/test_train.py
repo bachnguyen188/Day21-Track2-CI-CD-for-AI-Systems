@@ -2,7 +2,12 @@ import os
 import json
 import numpy as np
 import pandas as pd
+import pytest
+import mlflow
 from src.train import train
+
+# Thiết lập MLflow dùng thư mục tạm để tránh lỗi MissingConfigException trên CI
+os.environ["MLFLOW_TRACKING_URI"] = "sqlite:///mlflow_test.db"
 
 
 FEATURE_NAMES = [
